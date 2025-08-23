@@ -1,69 +1,48 @@
-// controllers/dashboardController.js
 import Bill from "../models/Bill.js";
+import User from "../models/User.js";
 
-// ✅ Updated Dashboard Summary with monthNames
 export const getDashboardSummary = async (req, res) => {
   try {
-    const totalBills = await Bill.countDocuments();
+    // Total users
+    const totalUsers = await User.countDocuments();
 
-    const totalAmountAgg = await Bill.aggregate([
-      { $group: { _id: null, total: { $sum: "$grandTotal" } } }, // ✅ use grandTotal
+    // Total orders
+    const totalOrders = await Bill.countDocuments();
+
+    // Total billing
+    const totalBillingAgg = await Bill.aggregate([
+      { $group: { _id: null, total: { $sum: "$grandTotal" } } },
     ]);
-    const totalAmount = totalAmountAgg[0]?.total || 0;
+    const totalBilling = totalBillingAgg[0]?.total || 0;
 
-    const totalTipsAgg = await Bill.aggregate([
-      { $group: { _id: null, total: { $sum: "$tips" } } },
-    ]);
-    const totalTips = totalTipsAgg[0]?.total || 0;
+    // Today's orders & billing
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayBills = await Bill.countDocuments({
-      createdAt: { $gte: today },
+    const todayOrders = await Bill.countDocuments({
+      createdAt: { $gte: startOfToday, $lte: endOfToday },
     });
 
-    // ✅ Monthly totals (with month names)
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
-    const monthlyData = await Bill.aggregate([
-      {
-        $group: {
-          _id: { $month: "$createdAt" },
-          totalAmount: { $sum: "$grandTotal" },
-          totalBills: { $sum: 1 },
-        },
-      },
-      { $sort: { _id: 1 } },
+    const todayBillingAgg = await Bill.aggregate([
+      { $match: { createdAt: { $gte: startOfToday, $lte: endOfToday } } },
+      { $group: { _id: null, total: { $sum: "$grandTotal" } } },
     ]);
-
-    const monthlySummary = monthlyData.map((item) => ({
-      month: monthNames[item._id - 1],
-      totalAmount: item.totalAmount,
-      totalBills: item.totalBills,
-    }));
+    const todayBilling = todayBillingAgg[0]?.total || 0;
 
     res.json({
-      totalBills,
-      totalAmount,
-      totalTips,
-      todayBills,
-      monthlySummary,
+      totalUsers,
+      totalOrders,
+      totalBilling,
+      todayOrders,
+      todayBilling,
     });
-  } catch (error) {
-    console.error("Dashboard summary error:", error);
-    res.status(500).json({ message: "Failed to get dashboard summary" });
+  } catch (err) {
+    console.error("Dashboard summary error:", err);
+    res.status(500).json({
+      message: "Failed to get dashboard summary",
+      error: err.message,
+    });
   }
 };
