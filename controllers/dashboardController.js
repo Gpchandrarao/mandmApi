@@ -1,8 +1,6 @@
 import Bill from "../models/Bill.js";
 import User from "../models/User.js";
 
-<<<<<<< HEAD
-=======
 // Month names helper
 const monthNames = [
   "Jan",
@@ -19,33 +17,21 @@ const monthNames = [
   "Dec",
 ];
 
->>>>>>> 57facb5 (Initial commit)
 export const getDashboardSummary = async (req, res) => {
   try {
     // Total users
     const totalUsers = await User.countDocuments();
 
-<<<<<<< HEAD
-    // Total orders = total bills count
-    const totalOrders = await Bill.countDocuments();
-
-    // Total billing amount
-=======
     // Total orders
     const totalOrders = await Bill.countDocuments();
 
     // Total billing
->>>>>>> 57facb5 (Initial commit)
     const totalBillingResult = await Bill.aggregate([
       { $group: { _id: null, total: { $sum: "$billAmount" } } },
     ]);
     const totalBilling = totalBillingResult[0]?.total || 0;
 
-<<<<<<< HEAD
-    // Today’s orders
-=======
     // Today's orders & billing
->>>>>>> 57facb5 (Initial commit)
     const start = new Date();
     start.setHours(0, 0, 0, 0);
     const end = new Date();
@@ -55,18 +41,12 @@ export const getDashboardSummary = async (req, res) => {
       createdAt: { $gte: start, $lte: end },
     });
 
-<<<<<<< HEAD
-    // Today’s billing
-=======
->>>>>>> 57facb5 (Initial commit)
     const todayBillingResult = await Bill.aggregate([
       { $match: { createdAt: { $gte: start, $lte: end } } },
       { $group: { _id: null, total: { $sum: "$billAmount" } } },
     ]);
     const todayBilling = todayBillingResult[0]?.total || 0;
 
-<<<<<<< HEAD
-=======
     // Day-wise data
     const dayWiseDataRaw = await Bill.aggregate([
       {
@@ -145,23 +125,12 @@ export const getDashboardSummary = async (req, res) => {
       loss: d.loss,
     }));
 
->>>>>>> 57facb5 (Initial commit)
     res.json({
       totalUsers,
       totalOrders,
       totalBilling,
       todayOrders,
       todayBilling,
-<<<<<<< HEAD
-    });
-  } catch (err) {
-    res
-      .status(500)
-      .json({
-        message: "Failed to fetch dashboard summary",
-        error: err.message,
-      });
-=======
       dayWiseData,
       monthWiseData,
       yearWiseData,
@@ -172,6 +141,5 @@ export const getDashboardSummary = async (req, res) => {
       message: "Failed to fetch dashboard summary",
       error: err.message,
     });
->>>>>>> 57facb5 (Initial commit)
   }
 };
