@@ -9,6 +9,7 @@ import authRoutes from "./routes/authRoutes.js";
 import billRoutes from "./routes/billRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import expenseRoutes from "./routes/expenseRoutes.js";
+import appointmentRoutes from "./routes/appointmentRoutes.js";
 
 dotenv.config();
 
@@ -40,3 +41,4 @@ app.use("/api/auth", authRoutes);
 app.use("/api/bills", billRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/expenses", expenseRoutes);
+app.use("/api/appointments", appointmentRoutes);
