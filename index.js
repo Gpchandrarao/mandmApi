@@ -48,5 +48,5 @@ app.use("/api/appointments", appointmentRoutes);
 app.use("/api/vendors", vendorRoutes);
 
 app.use("/api/workers", workerRoutes);
+
 app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
-app.use("/public", express.static(path.join("./public")));
