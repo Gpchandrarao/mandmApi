@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import path from "path";
 
 // routes
 import authRoutes from "./routes/authRoutes.js";
@@ -10,6 +11,8 @@ import billRoutes from "./routes/billRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import expenseRoutes from "./routes/expenseRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
+import vendorRoutes from "./routes/vendorRoutes.js";
+import workerRoutes from "./routes/workerRoutes.js";
 
 dotenv.config();
 
@@ -42,3 +45,8 @@ app.use("/api/bills", billRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/appointments", appointmentRoutes);
+app.use("/api/vendors", vendorRoutes);
+
+app.use("/api/workers", workerRoutes);
+app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
+app.use("/public", express.static(path.join("./public")));

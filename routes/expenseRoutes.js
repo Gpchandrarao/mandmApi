@@ -1,17 +1,45 @@
+// import express from "express";
+// import {
+//   createExpense,
+//   getExpenses,
+//   getExpenseById,
+//   updateExpense,
+//   deleteExpense,
+// } from "../controllers/expenseController.js";
+
+// const router = express.Router();
+
+// router.post("/", createExpense);
+// router.get("/", getExpenses);
+// router.get("/:id", getExpenseById);
+// router.put("/:id", updateExpense);
+// router.delete("/:id", deleteExpense);
+
+// export default router;
 import express from "express";
+import multer from "multer";
+import path from "path";
 import {
   createExpense,
   getExpenses,
-  getExpenseById,
   updateExpense,
   deleteExpense,
 } from "../controllers/expenseController.js";
 
 const router = express.Router();
 
-router.post("/", createExpense);
+// Setup multer for image upload
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "./public/uploads"),
+  filename: (req, file, cb) =>
+    cb(null, Date.now() + path.extname(file.originalname)),
+});
+
+const upload = multer({ storage });
+
+// Routes
 router.get("/", getExpenses);
-router.get("/:id", getExpenseById);
+router.post("/", upload.single("image"), createExpense);
 router.put("/:id", updateExpense);
 router.delete("/:id", deleteExpense);
 
