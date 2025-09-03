@@ -88,11 +88,11 @@ export const getWorkerReport = async (req, res) => {
 };
 
 // ✅ Create new worker
+
 export const createWorker = async (req, res) => {
   try {
     const { name, number, role, salary, joinDate, status } = req.body;
 
-    // Use uploaded file path
     const image = req.file ? `/uploads/${req.file.filename}` : "";
 
     const worker = new Worker({

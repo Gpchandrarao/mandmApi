@@ -18,9 +18,6 @@ router.get("/", getAllWorkers);
 // ✅ Single Worker by ID
 router.get("/:id", getWorkerById);
 
-// ✅ Create Worker
-router.post("/", createWorker);
-
 // ✅ Update Worker
 router.put("/:id", updateWorker);
 
